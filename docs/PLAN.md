@@ -218,12 +218,12 @@ to the wallet. First valid open flips `created → opened` (+ `opened_at`).
 
 ## Phase checklist
 
-### Phase 1 — Schema, migrations, reward engine, tests
-- [ ] Next.js + TS + Tailwind + Vitest scaffold; env wiring (`DATABASE_URL`, Supabase keys)
-- [ ] Migrations: enums, all tables, indexes, RLS deny-all + staff policies, audit append-only, lock trigger
-- [ ] Token/code generators (128-bit base64url; GLW-XXXX-XX)
-- [ ] Engine: `generateCards` (weighted + fixed pool, all-or-nothing, audit), `revealCard`, `redeemReward`
-- [ ] Tests: weighted distribution, fixed-pool exact count, concurrency no-over-draw, locked campaign, reveal idempotency
+### Phase 1 — Schema, migrations, reward engine, tests ✅
+- [x] Next.js + TS + Tailwind + Vitest scaffold; env wiring (`DATABASE_URL`, Supabase keys)
+- [x] Migrations: enums, all tables, indexes, RLS deny-all + staff policies, audit append-only, lock trigger
+- [x] Token/code generators (128-bit base64url; GLW-XXXX-XX)
+- [x] Engine: `generateCards` (weighted + fixed pool, all-or-nothing, audit), `revealCard`, `redeemReward`
+- [x] Tests: weighted distribution, fixed-pool exact count, concurrency no-over-draw, locked campaign, reveal idempotency — 19 tests, all passing against real Postgres
 
 ### Phase 2 — Admin auth, campaigns, pool editor
 - [ ] Supabase email auth, `staff_users` allowlist, `/admin` guard + login page
