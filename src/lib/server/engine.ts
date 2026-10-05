@@ -159,8 +159,10 @@ export async function generateCards(
     const campaign = campaignRes.rows[0];
     const now = new Date();
 
-    if (campaign.status === "closed") {
-      throw new CampaignStateError("campaign is closed");
+    if (campaign.status !== "active") {
+      throw new CampaignStateError(
+        `campaign is ${campaign.status}; only active campaigns generate cards`
+      );
     }
     if (campaign.ends_at != null && campaign.ends_at <= now) {
       throw new CampaignStateError("campaign has ended");

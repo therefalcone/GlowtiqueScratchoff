@@ -1,19 +1,20 @@
 @import "tailwindcss";
 
 /*
- * Design tokens from /design/_ds/modernist-.../styles.css (admin) and the
- * 1a "Gold foil on cream" direction (customer pages). Mapped into Tailwind
- * via @theme so utilities like bg-ink / text-cream resolve to the DS values.
+ * Design tokens. Admin screens use the Modernist design system verbatim
+ * (/design/_ds/modernist-.../styles.css); customer screens use the 1a
+ * "Gold foil on cream" palette from the design export. Tailwind reads the
+ * @theme block, and the DS component classes below read the same variables.
  */
 @theme {
   /* Modernist (admin) */
   --color-bg: #f3f2f2;
   --color-surface: #eae9e9;
-  --color-ink: #201e1d;
+  --color-text: #201e1d;
   --color-accent: #ec3013;
+  --color-accent-100: #fff2ef;
   --color-accent-600: #dd2b0f;
   --color-accent-700: #ae1800;
-  --color-accent-100: #fff2ef;
   --color-accent-800: #7c1405;
   --color-neutral-100: #f8f4f4;
   --color-neutral-300: #d7d3d3;
@@ -40,12 +41,22 @@
 
 :root {
   --color-divider: color-mix(in srgb, #201e1d 40%, transparent);
+  --font-heading-weight: 800;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
 }
 
 body {
+  margin: 0;
   background: var(--color-bg);
-  color: var(--color-ink);
+  color: var(--color-text);
   font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
 }
 
 :focus {
@@ -57,4 +68,229 @@ body {
 }
 ::selection {
   background: color-mix(in srgb, var(--color-accent) 30%, transparent);
+}
+
+/* ── Modernist component layer (copied from the DS stylesheet) ─────────── */
+
+.text-muted {
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+}
+
+.hr {
+  height: 2px;
+  border: 0;
+  margin: var(--space-4) 0;
+  background: var(--color-divider);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 14px;
+  line-height: 1.2;
+  color: var(--color-text);
+  background: transparent;
+  border: 1px solid transparent;
+  padding: var(--space-2) calc(var(--space-3) * 1.2);
+  border-radius: var(--radius-md);
+}
+.btn svg {
+  display: block;
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.btn-primary {
+  background: var(--color-accent);
+  color: var(--color-bg);
+}
+.btn-primary:hover {
+  background: var(--color-accent-600);
+}
+.btn-primary:active {
+  background: var(--color-accent-700);
+}
+.btn-secondary {
+  border-color: var(--color-divider);
+}
+.btn-secondary:hover {
+  background: color-mix(in srgb, var(--color-text) 7%, transparent);
+}
+.btn-secondary:active {
+  background: color-mix(in srgb, var(--color-text) 14%, transparent);
+}
+.btn-ghost {
+  color: var(--color-accent);
+  padding-inline: var(--space-1);
+}
+.btn-ghost:hover {
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+}
+.btn-ghost:active {
+  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+}
+.btn-block {
+  width: 100%;
+  margin-top: var(--space-2);
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.field > label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 5px;
+  color: color-mix(in srgb, var(--color-text) 70%, transparent);
+}
+.input {
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 10px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--color-text);
+  caret-color: var(--color-accent);
+  background: var(--color-surface);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+}
+.input:hover {
+  border-color: color-mix(in srgb, var(--color-text) 45%, transparent);
+}
+.input:focus-visible {
+  border-color: var(--color-accent);
+  outline-offset: 0;
+}
+textarea.input {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.seg {
+  display: inline-flex;
+  overflow: hidden;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+}
+.seg-opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  background: transparent;
+  border: 0;
+  color: var(--color-text);
+}
+.seg-opt + .seg-opt {
+  border-left: 1px solid var(--color-divider);
+}
+.seg-opt[aria-pressed="true"] {
+  background: var(--color-accent);
+  color: var(--color-bg);
+}
+.seg-opt[aria-pressed="false"]:hover {
+  background: color-mix(in srgb, var(--color-text) 7%, transparent);
+}
+
+.card-kicker {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  padding: 3px 10px;
+  border-radius: 0;
+}
+.tag-accent {
+  background: var(--color-accent-100);
+  color: var(--color-accent-800);
+}
+.tag-neutral {
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-800);
+}
+.tag-outline {
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.table th {
+  text-align: left;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  padding: var(--space-2);
+  border-bottom: 2px solid var(--color-divider);
+}
+.table td {
+  padding: var(--space-2);
+  border-bottom: 1px solid var(--color-divider);
+}
+.table tbody tr:hover {
+  background: color-mix(in srgb, var(--color-text) 4%, transparent);
+}
+
+/* Admin headings follow the DS type scale. */
+.admin h1,
+.admin h2,
+.admin h3,
+.admin h6 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+.admin h6 {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Stat tile grid: equal cells separated by 2px divider gaps (design 08/09). */
+.stat-grid {
+  display: grid;
+  gap: 2px;
+  background: var(--color-divider);
+}
+.stat-tile {
+  background: var(--color-bg);
+  padding: 16px 18px;
+}
+.stat-tile.on-surface {
+  background: var(--color-surface);
+}
+.stat-label {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+}
+.stat-value {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 32px;
 }

@@ -225,11 +225,14 @@ to the wallet. First valid open flips `created → opened` (+ `opened_at`).
 - [x] Engine: `generateCards` (weighted + fixed pool, all-or-nothing, audit), `revealCard`, `redeemReward`
 - [x] Tests: weighted distribution, fixed-pool exact count, concurrency no-over-draw, locked campaign, reveal idempotency — 19 tests, all passing against real Postgres
 
-### Phase 2 — Admin auth, campaigns, pool editor
-- [ ] Supabase email auth, `staff_users` allowlist, `/admin` guard + login page
-- [ ] Admin shell (sidebar per design) on Modernist tokens
-- [ ] Campaign list (08) with stat tiles; create/edit draft, activate, close, clone
-- [ ] Pool editor (09): mode toggle, live odds, totals, $5,000 warning; locked state → clone
+### Phase 2 — Admin auth, campaigns, pool editor ✅
+- [x] Supabase email auth, `staff_users` allowlist, `/admin` guard + login page
+- [x] Admin shell (sidebar per design) on Modernist tokens
+- [x] Campaign list (08) with stat tiles; create/edit draft, activate, close, clone
+- [x] Pool editor (09): mode toggle, live odds, totals, $5,000 warning; locked state → clone
+- Notes: only **active** campaigns generate cards (engine tightened); the builder's
+  "Total cards" in odds mode is a preview estimator, not persisted; reward description/terms
+  (needed by the reveal and wallet screens) live behind a per-row "Details" toggle.
 
 ### Phase 3 — Links + public card page
 - [ ] Generate single/batch with labels (10); results list with copy + QR; batch CSV; void card
