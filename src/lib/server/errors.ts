@@ -47,3 +47,17 @@ export class RewardStateError extends EngineError {
     this.status = status;
   }
 }
+
+export class CardNotFoundError extends EngineError {
+  constructor() {
+    super("card_not_found", "card not found");
+  }
+}
+
+export class CardStateError extends EngineError {
+  readonly status: string;
+  constructor(status: string, message: string) {
+    super("card_state", message);
+    this.status = status;
+  }
+}

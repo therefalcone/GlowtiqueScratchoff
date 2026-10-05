@@ -234,10 +234,15 @@ to the wallet. First valid open flips `created → opened` (+ `opened_at`).
   "Total cards" in odds mode is a preview estimator, not persisted; reward description/terms
   (needed by the reveal and wallet screens) live behind a per-row "Details" toggle.
 
-### Phase 3 — Links + public card page
-- [ ] Generate single/batch with labels (10); results list with copy + QR; batch CSV; void card
-- [ ] Rate limiting on token lookups
-- [ ] `/c/[token]`: landing (01), scratch canvas + Reveal button + reduced-motion (03/04), reveal API, idempotent revisit, dead-ends (07b/c + void)
+### Phase 3 — Links + public card page ✅
+- [x] Generate single/batch with labels (10); results list with copy + QR; batch CSV; void card
+- [x] Rate limiting on token lookups
+- [x] `/c/[token]`: landing (01), scratch canvas + Reveal button + reduced-motion (03/04), reveal API, idempotent revisit, dead-ends (07b/c + void)
+- Notes: one "Label" field stamps both the batch and each card (so the CSV carries it per
+  link); voiding does not return a fixed-pool outcome to the pool; closing a campaign does
+  not expire its outstanding cards (their own `expires_at` / campaign `ends_at` does); the
+  02 capture screen is a placeholder until Phase 4 wires the claim form; link base URL
+  comes from `NEXT_PUBLIC_APP_URL` or the request host.
 
 ### Phase 4 — Customer capture, wallet, redemption
 - [ ] Capture form (02): match by phone→email, create, attach, consent timestamps

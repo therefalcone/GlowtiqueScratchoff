@@ -31,8 +31,8 @@
   --color-gold-line: #e3d5b5;
   --color-gold-rule: #d8ccb0;
 
-  --font-heading: "Archivo", system-ui, sans-serif;
-  --font-body: "Archivo", system-ui, sans-serif;
+  --font-heading: var(--font-archivo), "Archivo", system-ui, sans-serif;
+  --font-body: var(--font-archivo), "Archivo", system-ui, sans-serif;
 
   --radius-sm: 0px;
   --radius-md: 0px;
@@ -293,4 +293,9 @@ textarea.input {
   font-family: var(--font-heading);
   font-weight: 800;
   font-size: 32px;
+}
+
+@keyframes confetti-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
