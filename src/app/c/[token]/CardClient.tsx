@@ -341,19 +341,103 @@ function ScratchScreen({
   );
 }
 
-function CaptureScreen({ card }: { card: Extract<CardView, { state: "ready" | "unclaimed" }> }) {
-  // Phase 4 wires this form to POST /api/cards/[token]/claim.
+function CaptureScreen({
+  token,
+  card,
+  onClaimed,
+  onDeadEnd,
+}: {
+  token: string;
+  card: Extract<CardView, { state: "ready" | "unclaimed" }>;
+  onClaimed: () => void;
+  onDeadEnd: (state: "expired" | "void") => void;
+}) {
+  const [firstName, setFirstName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [smsOptIn, setSmsOptIn] = useState(false);
+  const [emailOptIn, setEmailOptIn] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<{ message: string; field: string | null } | null>(null);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPending(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/cards/${token}/claim`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ firstName, phone, email: email || null, smsOptIn, emailOptIn }),
+      });
+      if (res.ok) return onClaimed();
+      const body = (await res.json().catch(() => ({}))) as { error?: string; field?: string | null; state?: string };
+      if (res.status === 410) {
+        if (body.state === "expired" || body.state === "void") return onDeadEnd(body.state);
+        return onClaimed(); // already revealed: the card screen handles it
+      }
+      if (res.status === 429) return setError({ message: "Too many attempts. Wait a minute and try again.", field: null });
+      setError({ message: body.error ?? "We couldn't save that. Please try again.", field: body.field ?? null });
+    } catch {
+      setError({ message: "We couldn't reach the salon. Check your connection and try again.", field: null });
+    } finally {
+      setPending(false);
+    }
+  };
+
+  const inputClass = (field: string) =>
+    "input min-h-[44px] bg-cream-panel text-card-ink " +
+    (error?.field === field ? "border-[#ae1800]" : "border-card-ink");
+
   return (
     <Frame right={card.campaignName}>
-      <div className="mx-6 mt-5 h-14 flex items-center px-4 font-heading font-extrabold text-[11px] tracking-[.14em] text-[#4a3410]" style={{ background: "linear-gradient(135deg,#a97a25,#e9c775 22%,#fbeab8 38%,#c7992f 52%,#f4dc98 68%,#b6862a 84%,#e7c672)" }}>
+      <div
+        className="mx-6 mt-5 h-14 flex items-center px-4 font-heading font-extrabold text-[11px] tracking-[.14em] text-[#4a3410]"
+        style={{ background: "linear-gradient(135deg,#a97a25,#e9c775 22%,#fbeab8 38%,#c7992f 52%,#f4dc98 68%,#b6862a 84%,#e7c672)" }}
+      >
         YOUR CARD IS WAITING · NO. {card.displayNumber}
       </div>
       <div className="px-6 pt-6">
         <h1 className="font-heading font-extrabold text-[28px] leading-[1.08] tracking-[-.02em] text-pretty">Tell us where to keep your reward</h1>
         <p className="mt-[10px] text-[14px] text-card-muted">We'll save it to a wallet you can open anytime. Takes ten seconds.</p>
       </div>
-      <div className="px-6 pt-5 text-[13px] text-card-muted">The sign-up form arrives in the next build. Your card is safe — come back with this same link.</div>
-      <Footer left={card.rulesUrl ? <RulesLink url={card.rulesUrl} /> : BUSINESS} right={card.rulesUrl ? BUSINESS : ""} />
+      <form onSubmit={submit} className="flex flex-col flex-1" noValidate>
+        <div className="px-6 pt-5 flex flex-col gap-[14px]">
+          <div className="field">
+            <label htmlFor="firstName" className="text-card-muted!">First name</label>
+            <input id="firstName" name="given-name" autoComplete="given-name" className={inputClass("firstName")} value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+          </div>
+          <div className="field">
+            <label htmlFor="phone" className="text-card-muted!">Mobile</label>
+            <input id="phone" name="tel" type="tel" inputMode="tel" autoComplete="tel" className={inputClass("phone")} placeholder="(239) 555-0142" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+          </div>
+          <div className="field">
+            <label htmlFor="email" className="text-card-muted!">Email</label>
+            <input id="email" name="email" type="email" inputMode="email" autoComplete="email" className={inputClass("email")} placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
+        </div>
+        <div className="px-6 pt-5 flex flex-col gap-3 text-[13px] text-card-muted">
+          <label className="flex gap-3 items-start cursor-pointer">
+            <input type="checkbox" className="mt-[2px] w-5 h-5 flex-none appearance-none border-2 border-card-ink bg-cream-panel checked:bg-card-ink" checked={smsOptIn} onChange={(e) => setSmsOptIn(e.target.checked)} />
+            <span>Text me appointment openings and member offers. Msg &amp; data rates may apply. Reply STOP to end.</span>
+          </label>
+          <label className="flex gap-3 items-start cursor-pointer">
+            <input type="checkbox" className="mt-[2px] w-5 h-5 flex-none appearance-none border-2 border-card-ink bg-cream-panel checked:bg-card-ink" checked={emailOptIn} onChange={(e) => setEmailOptIn(e.target.checked)} />
+            <span>Email me seasonal menus and event invitations.</span>
+          </label>
+        </div>
+        {error && (
+          <div role="alert" className="mx-6 mt-4 border-l-2 border-[#ae1800] pl-3 text-[13px] text-[#ae1800]">
+            {error.message}
+          </div>
+        )}
+        <div className="mt-auto px-6 pb-7 pt-6 flex flex-col gap-3">
+          <button type="submit" disabled={pending} className="bg-card-ink text-cream px-4 py-[14px] text-[15px] font-heading font-extrabold text-left disabled:opacity-60">
+            {pending ? "Saving…" : "Continue to my card"}
+          </button>
+          <div className="text-[11px] text-card-soft">Opt-ins are optional. Your reward is saved either way.</div>
+        </div>
+      </form>
     </Frame>
   );
 }
@@ -446,6 +530,10 @@ export function CardClient({
   bookingUrl: string | null;
 }) {
   const [screen, setScreen] = useState<"card" | "capture" | "expired" | "void">("card");
+  const [claimed, setClaimed] = useState(false);
+  if ((card.state === "ready" || card.state === "unclaimed") && claimed) {
+    card = { ...card, state: "ready" };
+  }
 
   if (card.state === "invalid" || card.state === "rate_limited") {
     const limited = card.state === "rate_limited";
@@ -501,7 +589,19 @@ export function CardClient({
 
   if (card.state === "revealed") return <AlreadyScratched card={card} bookingUrl={bookingUrl} />;
 
-  if (screen === "capture") return <CaptureScreen card={card} />;
+  if (screen === "capture") {
+    return (
+      <CaptureScreen
+        token={token}
+        card={card}
+        onClaimed={() => {
+          setClaimed(true);
+          setScreen("card");
+        }}
+        onDeadEnd={setScreen}
+      />
+    );
+  }
 
   return (
     <ScratchScreen

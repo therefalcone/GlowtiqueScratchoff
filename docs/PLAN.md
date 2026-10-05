@@ -244,12 +244,17 @@ to the wallet. First valid open flips `created → opened` (+ `opened_at`).
   02 capture screen is a placeholder until Phase 4 wires the claim form; link base URL
   comes from `NEXT_PUBLIC_APP_URL` or the request host.
 
-### Phase 4 — Customer capture, wallet, redemption
-- [ ] Capture form (02): match by phone→email, create, attach, consent timestamps
-- [ ] Reveal screen wallet-link save/copy (04); revealed card links through to wallet (07a)
-- [ ] Wallet list + filters (05), reward detail with code + QR (06)
-- [ ] Customers admin (11): search, profile, consent, copy/regenerate wallet link
-- [ ] Redeem (12): code entry, confirm, one-time, audited
+### Phase 4 — Customer capture, wallet, redemption ✅
+- [x] Capture form (02): match by phone→email, create, attach, consent timestamps
+- [x] Reveal screen wallet-link save/copy (04); revealed card links through to wallet (07a)
+- [x] Wallet list + filters (05), reward detail with code + QR (06)
+- [x] Customers admin (11): search, profile, consent, copy/regenerate wallet link
+- [x] Redeem (12): code entry, confirm, one-time, audited
+- Notes: first name + mobile are required, email optional (email opt-in requires an email);
+  an unchecked opt-in box never revokes an existing consent; the reward QR encodes the staff
+  redeem URL with the code prefilled, so any phone camera "scans" it (no QR-decoding
+  dependency); the design's POS service picker and "Add to Apple Wallet" are omitted per
+  the approved deltas; reward expiry is applied lazily on wallet/admin reads (audited).
 
 ### Phase 5 — Reports, audit, edge states, a11y
 - [ ] Per-campaign report + CSV export

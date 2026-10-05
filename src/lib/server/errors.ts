@@ -61,3 +61,11 @@ export class CardStateError extends EngineError {
     this.status = status;
   }
 }
+
+export class ValidationError extends EngineError {
+  readonly field: string | null;
+  constructor(message: string, field: string | null = null) {
+    super("validation", message);
+    this.field = field;
+  }
+}
