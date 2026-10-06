@@ -1,5 +1,6 @@
 import dns from "node:dns";
 import { Pool, type PoolClient } from "pg";
+import { pgConfig } from "./pg-config.mjs";
 
 // Serverless hosts often lack IPv6 egress; try A records before AAAA.
 dns.setDefaultResultOrder("ipv4first");
@@ -11,7 +12,7 @@ export function getPool(): Pool {
   if (!pool) {
     const connectionString = process.env.DATABASE_URL;
     if (!connectionString) throw new Error("DATABASE_URL is not set");
-    pool = new Pool({ connectionString, max: 10 });
+    pool = new Pool({ ...pgConfig(connectionString), max: 10 });
   }
   return pool;
 }

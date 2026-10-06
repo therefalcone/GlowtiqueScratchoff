@@ -5,6 +5,7 @@ import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import pg from "pg";
+import { pgConfig } from "../src/lib/server/pg-config.mjs";
 
 // Serverless/build hosts often lack IPv6 egress; try A records before AAAA.
 dns.setDefaultResultOrder("ipv4first");
@@ -58,7 +59,7 @@ if (isMain) {
     console.error("DATABASE_URL is required");
     process.exit(1);
   }
-  const client = new pg.Client({ connectionString: url });
+  const client = new pg.Client(pgConfig(url));
   await client.connect();
   try {
     await migrate(client);
