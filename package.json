@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "test": "vitest run",
-    "db:migrate": "node scripts/migrate.mjs"
+    "db:migrate": "node scripts/migrate.mjs",
+    "vercel-build": "npm run db:migrate && next build"
   },
   "dependencies": {
     "@supabase/ssr": "^0.7.0",

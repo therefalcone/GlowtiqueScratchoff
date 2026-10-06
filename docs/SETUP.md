@@ -61,16 +61,24 @@ the request host, so from a phone use your computer's LAN address or deploy to V
 Tests need a local Postgres (`postgres://postgres:postgres@127.0.0.1:5432`, override with
 `TEST_DATABASE_URL`); they never touch Supabase. `npm test`.
 
-## 5. Vercel
+## 5. Vercel (recommended: skip local entirely)
 
-1. Import the GitHub repo; framework preset Next.js (defaults are fine).
-2. Environment variables (Production + Preview):
-   - `DATABASE_URL` (Transaction pooler string, `?sslmode=require`)
+The `vercel-build` script runs `npm run db:migrate` before `next build`, so every deploy
+applies any pending migrations to the database in `DATABASE_URL`. No local step needed.
+
+1. vercel.com → **Add New → Project** → import the GitHub repo. Framework preset Next.js,
+   defaults are fine.
+2. **Environment variables** (apply to Production and Preview):
+   - `DATABASE_URL` — Supabase **Transaction pooler** string (port 6543) with `?sslmode=require`
    - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - `NEXT_PUBLIC_APP_URL` — set to the final domain (e.g. `https://glow.example.com`) so
-     generated card and wallet links use it; leave unset on previews.
-   - `NEXT_PUBLIC_BOOKING_URL` — optional.
-3. Deploy the `claude/zen-cray-i0xpng` branch (or merge it to `main` first).
+   - `NEXT_PUBLIC_APP_URL` — leave unset until you have a custom domain; links use the
+     deployment's own host until then
+   - `NEXT_PUBLIC_BOOKING_URL` — optional
+3. **Deploy.** The build log should show `applied 0001_schema.sql`, `applied 0002_rls.sql`.
+4. Code lives on `claude/zen-cray-i0xpng` until it is merged: either merge it to `main`,
+   or set **Settings → Git → Production Branch** to `claude/zen-cray-i0xpng` so pushes to it
+   deploy to production.
+5. Create your staff login (section 3), then open `https://<project>.vercel.app/admin`.
 
 ## Checklist
 
