@@ -13,9 +13,9 @@ const ERRORS: Record<string, string> = {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; detail?: string }>;
 }) {
-  const { error } = await searchParams;
+  const { error, detail } = await searchParams;
   const staff = await getStaffUser();
   if (staff && staff !== "not_staff") redirect("/admin/campaigns");
 
@@ -45,6 +45,7 @@ export default async function LoginPage({
             className="border-l-2 border-[var(--color-accent)] bg-[var(--color-accent-100)] text-[var(--color-accent-800)] px-3 py-2 text-[13px]"
           >
             {message}
+            {detail && <div className="text-[12px] mt-1 opacity-80">Supabase said: {detail.slice(0, 200)}</div>}
           </div>
         )}
         <form action={signIn} className="flex flex-col gap-4">

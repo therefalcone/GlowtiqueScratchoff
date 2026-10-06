@@ -11,7 +11,9 @@ export async function signIn(formData: FormData): Promise<void> {
 
   const supabase = await createSupabaseServer();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) redirect("/admin/login?error=invalid");
+  if (error) {
+    redirect(`/admin/login?error=invalid&detail=${encodeURIComponent(error.message)}`);
+  }
   redirect("/admin/campaigns");
 }
 
