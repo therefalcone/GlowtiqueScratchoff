@@ -1,9 +1,13 @@
 // Applies supabase/migrations/*.sql in filename order, once each, tracked in
 // schema_migrations. Usage: DATABASE_URL=... node scripts/migrate.mjs
+import dns from "node:dns";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import pg from "pg";
+
+// Serverless/build hosts often lack IPv6 egress; try A records before AAAA.
+dns.setDefaultResultOrder("ipv4first");
 
 const MIGRATIONS_DIR = path.join(
   path.dirname(fileURLToPath(import.meta.url)),

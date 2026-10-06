@@ -1,4 +1,8 @@
+import dns from "node:dns";
 import { Pool, type PoolClient } from "pg";
+
+// Serverless hosts often lack IPv6 egress; try A records before AAAA.
+dns.setDefaultResultOrder("ipv4first");
 
 let pool: Pool | undefined;
 
